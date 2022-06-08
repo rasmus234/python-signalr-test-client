@@ -4,6 +4,8 @@ import time
 
 from signalrcore.messages.completion_message import CompletionMessage
 
+import util
+
 sys.path.append("./")
 from signalrcore.hub_connection_builder import *
 
@@ -11,8 +13,11 @@ from signalrcore.hub_connection_builder import *
 def start_listener():
     hub_connection.on("ReceiveMessage", print)
     argss = None
-    response = hub_connection.send("ConnectLogger", ["rasmus","id"], lambda args: print(args.result))
-    print(response)
+    # response = hub_connection.send("ConnectLogger", ["rasmus","id"], lambda args: print(args.result))
+
+    util.send(hub_connection,"ConnectLogger",["TestId"],lambda: print("successs"),lambda: print("FAIL"))
+    # response = hub_connection.send("ConnectLogger", ["TestId"])
+
 
 
 
