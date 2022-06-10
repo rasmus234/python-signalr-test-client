@@ -37,7 +37,7 @@ def start_listener():
     argss = None
     # response = hub_connection.send("ConnectLogger", ["rasmus","id"], lambda args: print(args.result))
 
-    util.send(hub_connection,"ConnectLogger", ["62a1ec85e74a66e76deaab34"])
+    util.send(hub_connection,"ConnectLogger", ["62a3142236ae6cd5963322e3"])
     # util.send(hub_connection,"ConnectLogger", ["62a1ec85e74a66e76deaWRONMG"])
     hub_connection.on("GetConfig", lambda m: util.send(hub_connection,"SendConfig", [data]))
     # response = hub_connection.send("ConnectLogger", ["TestId"])
