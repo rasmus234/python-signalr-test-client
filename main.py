@@ -1,4 +1,6 @@
+import json
 import logging
+import random
 import sys
 import time
 
@@ -10,12 +12,12 @@ sys.path.append("./")
 from signalrcore.hub_connection_builder import *
 
 
-
+logger_id = "62a5e6512870a77e7aaf4ff0"
 data = {
    "Logging":{
-      "LoggerId":"62a1ec85e74a66e76deaab34",
+      "LoggerId":logger_id,
       "PairingId":"",
-      "Active":False,
+      "Active":True,
       "SocketUrl":"40.87.132.220:9093",
       "RestUrl":"40.87.132.220:9092"
    },
@@ -30,23 +32,34 @@ data = {
       "Dry":3.3
    }
 }
+def calibrate(param):
+    data["Soil"][param] = 1.2
+    util.send(hub_connection,"SendConfig", [data])
 
+
+def serialize(data):
+    print(data)
+    # print(json.dumps(data))
 
 def start_listener():
     hub_connection.on("ReceiveMessage", print)
     argss = None
     # response = hub_connection.send("ConnectLogger", ["rasmus","id"], lambda args: print(args.result))
 
-    util.send(hub_connection,"ConnectLogger", ["62a3142236ae6cd5963322e3"])
+    util.send(hub_connection,"ConnectLogger", [logger_id])
     # util.send(hub_connection,"ConnectLogger", ["62a1ec85e74a66e76deaWRONMG"])
-    hub_connection.on("GetConfig", lambda m: util.send(hub_connection,"SendConfig", [data]))
+    hub_connection.on("GetConfig", lambda response: util.send(hub_connection,"SendConfig", [data]))
+    hub_connection.on("SetConfig", serialize)
+    hub_connection.on("Calibrate", lambda response: calibrate(response[0]))
+
     # response = hub_connection.send("ConnectLogger", ["TestId"])
 
 
 
 
-# server_url = "ws://localhost:5140/hubs/logger"
-server_url = "https://plant-control-backend.herokuapp.com/hubs/logger"
+server_url = "ws://localhost:5140/hubs/logger"
+# server_url = "https://plant-control-backend.herokuapp.com/hubs/logger"
+# server_url = "http://20.4.59.10:9093/hubs/logger"
 
 handler = logging.StreamHandler()
 handler.setLevel(logging.DEBUG)
